@@ -159,15 +159,11 @@ get "/signup/?:thesecretcode?" do
 end
 
 post "/signup" do
-  if params[:thesecretcode].nil?
-      return 403
-    elsif params[:thesecretcode] == "Kuljasimsim"
-      if params[:first_name] != "" && params[:number] != ""
+       if params[:first_name] != "" && params[:number] != ""
         "You'll be hearing from soon, stay put!"
-      else "Please fill in the required fields"
-      end
-    else return 403
-  end
+       else 
+        "Please fill in the required fields"      
+        end
 end
 
  
