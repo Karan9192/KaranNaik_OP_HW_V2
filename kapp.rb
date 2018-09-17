@@ -54,9 +54,7 @@ end
 get "/about" do
   session["visits"] ||=0 #set the session to 0 if it hasn't been set before
   session["visits"] = session["visits"] + 1 #adds one to the current value
-   # time = Time.new #component of time
-#   time_now = time.strftime("%Y-%m-%d %H:%M:%S")
-#   time_today = time.strftime("%A %B %d, %Y %H:%M")
+  
   
   visits_string = "I can retrieve useful information from your phone </br>
   Total visits: " + session["visits"].to_s + "</br>" +
@@ -87,10 +85,10 @@ get "/incoming/sms" do
 end
 
 get "/test/conversation/?:body?/?:from?" do # /?:param?/?:param? for unnamed parameters
-session['body'] = params['body']
-session['from'] = params['from']
+  session['body'] = params['body']
+  session['from'] = params['from']
 
-def determine_response (body)
+   def determine_response (body)
     body = body.downcase.strip
     no = "I'm not able to understand your inputs :( Please try again with who,what,where,why, or just type help"
     array_of_lines = IO.readlines("jokes.txt")
@@ -104,7 +102,7 @@ def determine_response (body)
     
     # greetings_lc = greetings.each{|x| x.downcase.strip}
     # if body == evening_greetings.sample or body ==morning_greeting.sample
-#       return "hello friend"
+    # return "hello friend"
 
     if greetings.include? body
       return "hello friend" 
@@ -127,6 +125,7 @@ def determine_response (body)
       return no 
     end
   end
+end
   
   if params[:body].nil? && params[:from].nil? #doubt
   # if !params[:first_name][:number].nil?
@@ -137,8 +136,8 @@ def determine_response (body)
      return " #{session['body']}. Your phone number is #{params['from']}.<br/>" + 
      determine_response(params['body'])
   end 
-end     
-  
+ end     
+
   # 403
 
 #what is this below? only shows function running in terminal, not anywhere else
@@ -172,7 +171,7 @@ get "/signup/?:thesecretcode?" do
   end
 end
 
-post "/signup" do
+
  post "/signup" do
   # code to check parameters
   #...   
