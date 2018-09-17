@@ -20,6 +20,11 @@ def check_command_is_in_string body, commands
   return false 
 end   
 
+configure :development do
+  require 'dotenv'
+  Dotenv.load
+end
+
 # $thesecretcode = "Kulja Sim Sim"
 
 time = Time.new #component of time
@@ -159,11 +164,27 @@ get "/signup/?:thesecretcode?" do
 end
 
 post "/signup" do
-       if params[:first_name] != "" && params[:number] != ""
+      if params[:first_name] != "" && params[:number] != ""
         "You'll be hearing from soon, stay put!"
-       else 
+      else 
         "Please fill in the required fields"      
-        end
+      end
+
+         # code to check parameters
+  #...   
+  client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
+
+  # Include a message here
+  message = "Hi" + params[:first_name] + ", welcome to BotName! I can respond to who, what, where, when and why. If you're stuck, type help."
+  
+  # this will send a message from any end point
+  client.api.account.messages.create(
+    from: ENV["TWILIO_FROM"],
+    to: params[:number],
+    body: message
+  )
+  # response if eveything is OK
+  "You're signed up. You'll receive a text message in a few minutes from the bot. "
 end
 
  
