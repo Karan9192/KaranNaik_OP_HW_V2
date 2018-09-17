@@ -91,37 +91,38 @@ get "/test/conversation/?:body?/?:from?" do # /?:param?/?:param? for unnamed par
 session['body'] = params['body']
 session['from'] = params['from']
 
+
 def determine_response (body)
     body = body.downcase.strip
-    no = "i didnt quite understand what you mean"
-    array_of_lines = IO.readlines("jokes.txt")
-    array_of_lines_b = IO.readlines("facts.txt")
+    no = "I didnt quite understand what you mean"
+
+    jokes = IO.readlines("jokes.txt")
+    facts = IO.readlines("facts.txt")
     
     empty_array = []
     where = ["Pittsburgh","The City of Bridge","City of the 3 Rivers"]
     greetings = ["hi","Wadap","What's up"]
-    
     what_commands = ["what", "help", "features", "functions", "actions"]
     
     
 
     if greetings.include? body
-      return "hello friend" 
-    elsif body.include? "who" or body.include? "facts" or body.include? "name"
-      return "Hi! I'm Friday, An advanced AI. Here are some fun facts about my creator Karan Naik </br>" + 
-      array_of_lines_b.sample
+      return "Hello there! Try asking me what" 
+    elsif body.include? "who" or body.include? "facts" or body.include? "name" or body.include? "what"
+      return "Hi! I'm Friday, An advanced AI. Here are some fun facts about my creator Karan Naik </br>" + facts.sample
+      
       #elsif body.include? "what" or body.include? "help" or body.include? "features" or body.include? "functions" or
       # "help"
       # "help me"
     elsif check_command_is_in_string body, what_commands
       # body.include? "actions"
-      return "I can aanswer basic info about Karan Naik" 
+      return "I can provide basic info about Karan Naik" 
     elsif body == "where" 
       return where.sample 
     elsif body == "why" 
       return "i have been made for a class project" 
     elsif body == "joke"
-      return array_of_lines.sample
+      return jokes.sample
     else 
       return no 
     end
@@ -133,8 +134,7 @@ def determine_response (body)
   #if params[:first_name][:number].nil? #this absolutely doesn't work
      return "please enter your first name and number" 
   else
-     return " #{session['body']}. Your phone number is #{params['from']}.<br/>" + 
-     determine_response(params['body'])
+     return determine_response(params['body'])
   end 
 end   
 
@@ -142,23 +142,9 @@ end
 
  
 
-get "/signup/?:thesecretcode?" do
-  # session['first_name'] = params['first_name']
-  # session['number'] = params['number']
-  
-  # $thesecretcode = "Kuljasimsim" #Bollywood joke haha
-  
-  # "Thank you #{session['first_name']}. Your phone number is #{params['number']}"
-  
-  if params[:thesecretcode].nil?
-    return 403
-  elsif params[:thesecretcode] == "Kuljasimsim"
-    # return
-    # "You've got the code now"
+get "/signup" do
+
     erb :signup
-    # <p> <%= my-variable %> </p>
-  else return 403
-  end
 end
 
 post "/signup" do
@@ -170,9 +156,11 @@ post "/signup" do
 
          # code to check parameters
   #...   
+  # TWILIO_ACCOUNT_SID=ACb33dabd7b4d0f66fdcdddc60a41514e1
+  # TWILIO_AUTH_TOKEN=01408fd6527d8234c31040d9f5de051c
+  # TWILIO_FROM="+18562634192"
   client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
 
-  # Include a message here
   message = "Hi " + params[:first_name] + ".I'm Friday, a chatbot created by Karan Naik! I can respond to who, what, where, when and why. If you're stuck, type help."
   
   # this will send a message from any end point
