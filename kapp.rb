@@ -85,9 +85,7 @@ get '/signup/:firstname/:number' do
   'Thanks for signing up, ' + params[:firstname].capitalize + '! Your number is ' + params[:number] + '.'
 end
 
-get "/incoming/sms" do
-  403
-end
+
 
 get "/test/conversation/?:body?/?:from?" do # /?:param?/?:param? for unnamed parameters
 session['body'] = params['body']
@@ -187,4 +185,38 @@ post "/signup" do
   "You're signed up. You'll receive a text message in a few minutes from the bot. "
 end
 
+ get "/incoming/sms" do
  
+  session["counter"] ||= 1
+  body = params[:Body] || ""
+
+  if session["counter"] == 1
+    message = "Thanks for your first message"
+    media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
+  else
+    message = "Thanks for message number #{ count }"
+    media = nil
+  end
+  
+  # Build a twilio response object 
+  twiml = Twilio::TwiML::MessagingResponse.new do |r|
+    r.message do |m|
+
+      # add the text of the response
+      m.body( "Pretty neat right?" )
+      
+      # add media if it is defined
+      unless media.nil?
+        m.media( media )
+      end
+    end 
+  end
+  
+  # increment the session counter
+  session["counter"] += 1
+  
+  # send a response to twilio 
+  content_type 'text/xml'
+  twiml.to_s
+  
+end
