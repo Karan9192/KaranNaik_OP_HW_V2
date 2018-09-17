@@ -37,12 +37,12 @@ get "/" do
   
   if time.hour >= 12
     if session["first_name"] 
-      evening_greetings.sample + " " + session["first_name"]
+     evening_greetings.sample + " " + session["first_name"]
     else
       evening_greetings.sample 
     end
   
-  elsif time.hour<12
+    elsif time.hour<12
     if session["first_name"]
       morning_greeting.sample + " " + session["first_name"] 
     else
@@ -85,47 +85,44 @@ get "/incoming/sms" do
 end
 
 get "/test/conversation/?:body?/?:from?" do # /?:param?/?:param? for unnamed parameters
-  session['body'] = params['body']
-  session['from'] = params['from']
+session['body'] = params['body']
+session['from'] = params['from']
 
-   def determine_response (body)
+def determine_response (body)
     body = body.downcase.strip
-    no = "I'm not able to understand your inputs :( Please try again with who,what,where,why, or just type help"
+    no = "i didnt quite understand what you mean"
     array_of_lines = IO.readlines("jokes.txt")
     array_of_lines_b = IO.readlines("facts.txt")
     
-    empty_array = [] 
-    where = ["This is the City of Bridges!","I live in Pittsburgh", "Black and Yellow Black Yellow Black Yellow"]
-    greetings = ["Hey!","What's up?","How's it going?","How you doin?","Hello"]
+    empty_array = []
+    where = ["Pittsburgh","The City of Bridge","City of the 3 Rivers"]
+    greetings = ["hi","Wadap","What's up"]
     
     what_commands = ["what", "help", "features", "functions", "actions"]
     
-    # greetings_lc = greetings.each{|x| x.downcase.strip}
-    # if body == evening_greetings.sample or body ==morning_greeting.sample
-    # return "hello friend"
+    
 
     if greetings.include? body
       return "hello friend" 
     elsif body.include? "who" or body.include? "facts" or body.include? "name"
-      return "Hi! I'm Friday. An advanced AI created by Karan Naik. Ask me something by typing 'Facts' </br>" + 
+      return "Hi! I'm Friday, An advanced AI. Here are some fun facts about my creator Karan Naik </br>" + 
       array_of_lines_b.sample
       #elsif body.include? "what" or body.include? "help" or body.include? "features" or body.include? "functions" or
       # "help"
       # "help me"
     elsif check_command_is_in_string body, what_commands
       # body.include? "actions"
-      return "I just know a couple of basic stuff" 
+      return "I can aanswer basic info about Karan Naik" 
     elsif body == "where" 
       return where.sample 
     elsif body == "why" 
-      return "I'm actually a project for the Online Prototyping Fall 2018 class" 
+      return "i have been made for a class project" 
     elsif body == "joke"
       return array_of_lines.sample
     else 
       return no 
     end
   end
-end
   
   if params[:body].nil? && params[:from].nil? #doubt
   # if !params[:first_name][:number].nil?
@@ -136,57 +133,41 @@ end
      return " #{session['body']}. Your phone number is #{params['from']}.<br/>" + 
      determine_response(params['body'])
   end 
- end 
-end    
+end   
 
   # 403
 
-#what is this below? only shows function running in terminal, not anywhere else
-
-# get '/signup' do
-#   # if the session variable value contains a value
-#   # display it in the root endpoint
-#   "first_name = " << session[:first_name].inspect
-#   "number =" << session[:number].inspect
-# end
-
-#this is a basic route named hello that
-#takes a parameter called name and number
+ 
 
 get "/signup/?:thesecretcode?" do
   # session['first_name'] = params['first_name']
   # session['number'] = params['number']
   
-  # $thesecretcode = "Kulja Sim Sim"
+  # $thesecretcode = "Kuljasimsim" #Bollywood joke haha
   
   # "Thank you #{session['first_name']}. Your phone number is #{params['number']}"
   
   if params[:thesecretcode].nil?
     return 403
-  elsif params[:thesecretcode] == "Kulja Sim Sim"
+  elsif params[:thesecretcode] == "Kuljasimsim"
     # return
-    # "You've got the code"
+    # "You've got the code now"
     erb :signup
     # <p> <%= my-variable %> </p>
   else return 403
   end
 end
 
-
- post "/signup" do
-  # code to check parameters
-  #...   
-  client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
-
-  # Include a message here
-  message = "Hi" + params[:first_name] + ", Welcome, I'm Friday! I can respond to who, what, where, when and why. If you're stuck, type help."
-  
-  # this will send a message from any end point
-  client.api.account.messages.create(
-    from: ENV["TWILIO_FROM"],
-    to: params[:number],
-    body: message
-  )
-  # response if eveything is OK
-  "You're signed up. You'll receive a text message in a few minutes from the bot. "
+post "/signup" do
+  if params[:thesecretcode].nil?
+      return 403
+    elsif params[:thesecretcode] == "Kuljasimsim"
+      if params[:first_name] != "" && params[:number] != ""
+        "You'll be hearing from soon, stay put!"
+      else "Please fill in the required fields"
+      end
+    else return 403
+  end
 end
+
+ 
