@@ -128,7 +128,7 @@ def determine_response (body)
     end
   end
   
-  if params[:body].nil? && params[:from].nil? #doubt
+  if params[:Body].nil? && params[:from].nil? #doubt
   # if !params[:first_name][:number].nil?
   # if !params[:first_name][:number].empty?
   #if params[:first_name][:number].nil? #this absolutely doesn't work
